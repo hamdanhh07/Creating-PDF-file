@@ -159,6 +159,8 @@ The paragraph of sending the e-mail consists of 3 main points:
 - The email address
 - Subject
 - Message
+
+
 ![Age table](./images/power-bi/age-table.png)   
 
 The email address: and you can put more than one email by adding \n, which means the Enter , and then writing the other email in the paragraph below
@@ -196,4 +198,4 @@ There is much more to explore about Google Apps Script, but you should have a go
 
 Here are some ideas and References that i used:
 
-- Laurence Svekis website: ![basescripts](https://basescripts.com/category/apps-script)
+- Laurence Svekis website: [basescripts](https://basescripts.com/category/apps-script)
