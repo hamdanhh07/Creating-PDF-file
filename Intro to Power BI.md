@@ -1,18 +1,26 @@
 # Intro to Power BI
 
-Dataset: [Stack Overflow Developer Survey 2022](https://insights.stackoverflow.com/survey/)
+Video Guide: [Learn Google Apps Script Project Lesson Create PDF from Docs Using Google Sheet Data send Emails](https://www.youtube.com/watch?v=ikf-oJsStd4)
 
-## What is Power BI?
+## What is Google Apps Script?
 
-Power BI is a popular enterprise business intelligence tool. It allows you to gather data and transform it into charts, tables, and other visualizations. It shares engines with Excel PowerPivot and Microsoft Analysis Services.
+Google Apps Script is a cloud-based scripting language for extending the functionality of Google Apps and building lightweight cloud-based applications.
 
-There are three big-picture components to the Power BI ecosystem: Power BI Desktop, the Power BI service within M365, and Power BI Report Server (which is a rebrand of SQL Server Reporting Services). Since the service has minimal development capabilities, we will focus on the desktop version.
+It means you write small programs with Apps Script to extend the standard features of Google Workspace Apps. It’s great for filling in the gaps in your workflows.
 
-**Note: The desktop app will suggest you sign in to the Power BI service. This isn't required for this workshop.**
+With Apps Script, you can do cool stuff like automating repeatable tasks, creating documents, emailing people automatically and connecting your Google Sheets to other services you use.
 
-## Importing Data
+## Goal explaniation
 
-When you first open up the app, there are a lot of menus and toolbars. For now, we can ignore all of them except one- at the top left is the "Get data" option. The Stack Overflow data is in CSV format, so select that from either the 'Common Data Sources' or the 'Get Data' modal. Find the 'survey_results_public.csv' file you downloaded and open it. Power BI will give you a preview of what it thinks the data should look like once loaded. It should be correct, and we can choose 'Load.' It may take a few seconds to load in, but you should be back to the blank report view with the table listed in the far-right 'Fields' sidebar.
+what we will do is automate a creating PDF file using a Doc template by obtaing the information in a Google Form.
+then we send the PDF as email and save it to google drive.
+
+## Setup files and folders
+Before making the code, let's go into Google drive and create files that will be needed later .
+Log into your Google Account - Go to your Google Drive
+Select the New button, and create a Folder and then creat a Google form and a Google Doc"or upload a template".
+Give them names.
+
 
 ![Get data menu](./images/power-bi/get-data-1.png)
 
@@ -20,141 +28,172 @@ When you first open up the app, there are a lot of menus and toolbars. For now, 
 
 ![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-## Navigating the Data
+## Google Froms
+After create the google form file , click on it and fill the form with you wanted questions that will be display on the PDF file.
 
-Before making the pretty pictures, let's look at how data Power BI reports handle data. There are three options on the left side navigation. The default is report view, which is (shockingly /s) where the resulting report is.
+![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-![Left sidebar options](./images/power-bi/data-views.png)
+![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-If you don't care about how the database works, skip the next little bit.
+![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-### The Nerd Stuff
+### Google Doc
 
-Power BI stores data in analysis services (you can even see it running if you look at Task Manager). It is an in-memory column store database. I'll let you look up column store if you want to know more about that. The critical aspects are that the data storage is compact and it is incredibly efficient at running the calculations commonly used in reports.
+The template is going to be used as a base for forming the PDF documents.
+The template can also have values that will be automatically populated using
+Google Apps Script " we will do that later". I’m using the sheet heading values, as uppercase
+values and nested within curly brackets. This provides a way to uniquely
+identify the values to be replaced. Hello, {FIRST} {LAST}
 
-![Analysis Services](./images/power-bi/ssas.png)
+![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-To be able to pull data from so many different types of data sources, it uses a language known as Power Query (or M). It won't be covered here, but you can look at the code Power BI generated for the CSV file by selecting 'Transform Data' in the top ribbon.
+![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-### Table View
+![Table on the sidebar](./images/power-bi/get-data-4.png)
 
-Table view lets you look at the tables like you would a spreadsheet. The main difference is that you can't edit the data here. Instead, it's used for reviewing the data and changing various settings at the column level.
+Add Data to the spreadsheet with column headings to match the fields to be
+updated in the template.
+
+
+### Google Sheet
+
+Please note that we did not make the Google Sheet file, but we have used the sheet that the responses come with the form already, doing that will link between the form and the sheet, unlike if a file was made in the Diarif or the Excel file was uploaded.
+To form and the Excel file , in order to do that go to :
+form - responses - click on "show on google sheet"
 
 ![Table view](./images/power-bi/table-view.png)
 
-### Model View
+After that make sure the timezone is displayed and correct to you location.
 
-The model view is where you can see all the tables in your data model and how they relate. Because there is only one table in the sample data, there is little here. In real-world reports, you usually have anywhere from a handful of tables to several hundred.
+![Table view](./images/power-bi/table-view.png)
+
+###  App Scripts
+
+Google Script is used to make an automatic PDF file every time a response is received , it will send an email and the PDF is attached to the attachments.
+Also, the PDF will be uploaded to the Google Drive folder, which was previously created.
+To go to App Scripts, go to the additions in Google Sheet, and to program - Google applications
 
 ![Model view](./images/power-bi/model-view.png)
 
-## Report View
+## Code
 
 In the report view, the essential tools are along the right side: Filters, Visualizations, and Fields. Visualizations are the different ways to display data, and the Fields lists out all the tables, columns, and measures. We have yet to get to measures, so don't worry if you don't know what that is.
 
-## Your First Visual
+1. Linking the Files to the code.
+2. Connect the code in the table page in Google Sheet.
+  - 2.5 Explaing to How the files are named and how the Google script reads it.
+3. Make a pdf file.
+4. Send an email that includes the PDF.
+5. Put a word yes to make sure that e-mail has been send.
 
-Click and drag the age column into the report view to get started. You'll get a table visual with the selected data. This table already illustrates an important concept in Power BI. It functions primarily with unique values, so there are only ten rows in the table, even though there are 70,000 in the dataset.
+![Model view](./images/power-bi/model-view.png)
+
+
+- code
+
+## 1. Linking the Files to the code.
+
+In order to link the sheet, Google doc, and Google Drive folder to the code, copy each of their links. Replace the values below with links you own.
 
 ![Age table](./images/power-bi/age-table.png)
 
-The visualizations bar will also show information about whichever visual we selected. To add a column, scroll down to 'YearsCode' and drag that to either the column list in the visual bar or onto the table itself. There is still only one row per unique value, but it's unique based on both columns.
+- Google Drive
+![Age table](./images/power-bi/age-table.png)
 
-![Age table with years code](./images/power-bi/experience-add-column.png)
+- Google Sheet
+![Age table](./images/power-bi/age-table.png)
 
-For now, delete the 'YearsCode' column from the table by clicking the X on the visualization bar.
+- Google Doc
+![Age table](./images/power-bi/age-table.png)
 
-### Adding Context
+## 2. Connect the code in the table page in Google Sheet.
 
-There are a couple of things we probably want to do with this data. The first is to eliminate any values marked as 'NA' (Not Applicable) or 'Prefer not to say.' Next is to give helpful information about the data- how many devs were in each category.
+In the code below, it will take the data in the table.
+The only variable to consider is the Sheet name.
+You have to make sure that the name in the code is the same as the name of the sheet in Google Sheet.
 
-#### Add a Filter
+![Age table](./images/power-bi/age-table.png)
 
-To filter values without editing the underlying data, one option is filters. With the age visual selected, there are three levels of filters available: visual, page, and report. Since there is a visual selected it will automatically add a filter for any data in that visual, but the filter is set to 'All'. Open the age filter to change it.
+## 2.5 Explaing to How the files are named and how the Google script reads it.
 
-![Age filter](./images/power-bi/filter-data.png)
+In the code, the Function row[] will be used alot, but what is it?
+The script reads the data in the form of a table. Each Row in the Google Sheet table is condider a stand alone Table.
 
-We want all the data except a couple of values, so we first choose 'Select all' then scroll down and remove the checks next to 'NA' and 'Prefer not to say.' The table should update to hide those values.
+![Age table](./images/power-bi/age-table.png)
 
-#### Add a Measure
+Let's say that we will select the third column below in naming the files.
+It will be in writing in the code as " row[2]  ", note that we refer to the first column by the number 0 and so on.
+When we say " row[6] " we are referring to the data in column 7.
 
-Measures let us combine multiple rows of data into one. This is how things like sums and averages are added to the model. Simple measures like sums can be done within a visual, but adding them to the model keeps calculations consistent and allows you to build other measures with them.
+![Age table](./images/power-bi/age-table.png)
 
-Power BI uses a language called [DAX (Data Analysis Expressions)](https://learn.microsoft.com/en-us/dax/) within reports. If you have any experience with writing formulas in spreadsheets, then you should be able to apply that knowledge to DAX as they look very similar.
+Using this method, we can put a conditional clause in the event that there is empty data in the seventh column to verify that an email has been sent.
+if there is data, the could will skipped and moved to the next line of data.
+if the cell is empty, a PDF will be created and will send an email attached with the PDF,  next will put the word “Yes” in the cell.    
 
-There are two big differences between working with a spreadsheet and working in DAX, and they will probably twist your brain a little bit.
+![Age table](./images/power-bi/age-table.png)
 
-1. Spreadsheet formulas act on specific cells within a spreadsheet, whereas DAX works on columns and tables. In DAX you select the specific cells within a column by using filters.
-2. DAX doesn't assume any specific order for the data rows. If I have one row for each month and want to calculate the change from the previous month, I have to point at the previous month using filters since DAX doesn't assume that the previous month is also the previous row.
+## 3. Make a pdf file.
 
-Fortunately, the DAX for counting how many devs are in each age category is not too complex. Right-click the table in the Fields bar and select 'New measure.' At the top of the report, a formula bar will appear. To the left of the equals sign is the measure's name, which will show in the field list and on visuals. The right side is where the formula goes.
+a word file and a pdf file will be created, provided that the word file  will be deleted if the pdf file is created.
+In the code below, you can change the file name, and also if you want to keep the word file.
+If you want to change the file name, go to setName() and put the name in brackets
+notice that the data in the table was used for the naming the pdf file.
 
-![Add a measure](./images/power-bi/new-measure-1.png)
+![Age table](./images/power-bi/age-table.png)
 
-Measures must always resolve to a single value, no matter how many rows are included in the result. Since each row in the table represents one developer who took the survey, `COUNTROWS()` will give us the count. The table name goes inside the function parameters inside single quotes. After hitting enter, the measure will show up in the fields list with a calculator next to the name, so we know it is a measure and not a column. The final formula will be `Dev Count = COUNTROWS('survey_results_public')`.
+ - word file naming
+ change the following to what you want the file name be :
+ ![Age table](./images/power-bi/age-table.png)
 
-![Dev count formula](./images/power-bi/dev-count-1.png)
+ - PDF file naming
+ change the following to what you want the file name be :
+ ![Age table](./images/power-bi/age-table.png)
 
-![Dev count on the sidebar](./images/power-bi/dev-count-2.png)
+ - Delete the word file after the pdf been created
+ if you want to keep the word file delete this line.
+ ![Age table](./images/power-bi/age-table.png)
+## 4. Send an email that includes the PDF.
 
-#### Use the Measure
+The paragraph of sending the e-mail consists of 3 main points:
+- The email address
+- Subject
+- Message
+![Age table](./images/power-bi/age-table.png)   
 
-To see how this works, drag the new Dev Count measure into the table. The counts for each value will show up in the table along with a total. The way this works without rows or cells is that each value in the Age column acts as a filter, and the `ROWCOUNT()` function is applied in the context of that filter. For the total value, there aren't any age values in the table applied, but it still respects the visual filter we added-- 'NA' and 'I prefer not to say' rows aren't included.
+The email address: and you can put more than one email by adding \n, which means the Enter , and then writing the other email in the paragraph below
+![Age table](./images/power-bi/age-table.png)   
 
-## Visualizing the Data
+Subject : You can set variable values via row[] method and also more than one variable value. The image below is an example of setting more than one
+Variable and also fixed text.
+![Age table](./images/power-bi/age-table.png)   
 
-Tables are useful, but the goal is to visualize data- to allow humans to interpret it more quickly than by reading. With the table selected, switch it to a stacked column chart (top row, second from the left). Power BI will automatically guess that we want the columns to be the age groups.
+Message : As mentioned in the previous paragraph, you can write whatever you want, in case you want to put a variable in the middle of a fixed text
+Use the ${} sign where you want to add the variable text.
+The image below is an example of the method
+![Age table](./images/power-bi/age-table.png)   
 
-![Stacked column chart](./images/power-bi/stacked-bar.png)
+There is no need to change The rest of the code. 
 
-![Stacked column chart](./images/power-bi/stacked-bar-2.png)
+## 5. Put a word yes to make sure that e-mail has been send.
 
-The results are sorted by count, and we probably want them sorted by age (You may want to remove the 'Under 18' values for this. It can be fixed, but it is outside of the scope of this workshop). Each visual will have a few options at the top or bottom right. Ordering is under the three dots. You can change it to sort by age ascending to get the graph looking the way most would expect.
+In Step 2 "Connect the code in the table page in Google Sheet", a conditional was placed to ensure that the e-mail was sent in a specific cell in the table. Column 7 was placed to ensure that if it was empty, the e-mail would be sent, and if there was data on it, it would skip it.
+In the code below, we will specfie what coulm should the data be in         :
 
-![More Options](./images/power-bi/more-options.png)
+![Age table](./images/power-bi/age-table.png)
 
-### Add Another Visual
+Change the value in the cell above to the column number that was previously placed in Paragraph 2.
+Remember that there was used row[6] that refers to the seventh column.
 
-The next thing we'll add is a map of where the devs are located. This might be disabled for you. If so, you can go into security settings and allow them.
+![Age table](./images/power-bi/age-table.png)
 
-![Options menu](./images/power-bi/options.png)
-
-![Security settings](./images/power-bi/allow-maps.png)
-
-Once maps are enabled, click outside the bar chart so you don't have that visual selected. Click on the Map visual to add it to the report (Note: There is a plan map visual, NOT the ArcGIS Maps one). Once the visual is created, add Country as the location and Dev Count for the bubble size. If you want a more colorful map, add Country to the legend.
-
-![Map visual](./images/power-bi/map.png)
-
-While cool, the bubbles are small, and they would look better if they were larger. To do that, open up the Format tab of the visualizations bar. If you added countries to the legend option, you may want to turn the actual text off, and I found 12 px to be a good size for the bubbles.
-
-![Map format](./images/power-bi/format-visual-1.png)
-
-#### Interactions Between Visuals
-
-Now that there are a couple of things on the page, the data becomes more interactive. Pick a country on the map and click its bubble. The age graph will automatically filter down to responses from that country. Click on the map outside any of the bubbles to remove the filter.
-
-![Interactions](./images/power-bi/select-country.png)
-
-For countries with a lot of devs, like the US and India the default interaction is fine, but it doesn't work well for other countries. With the map visual selected, go to the format ribbon and click on 'Edit interactions.' Each other visual on the page will have three options in the same location as the sort menu we used before: filter, highlight, and ignore. Swap the bar chart to the first option (filter) and turn off edit interactions. Now when you click on a country the bar chart will only show values for that country.
-
-![Edit interactions](./images/power-bi/edit-interactions-1.png)
-
-![Edit interactions](./images/power-bi/edit-interactions-3.png)
-
-### Slicers
-
-Filters are one way to filter the data, but they aren't great UX on a finished report. If there is a way you expect users to filter data on their own,  you can use a slicer visual. Unselect all the existing visuals and add a slicer visual- it looks like a to-do list with the filter symbol about two-thirds down. Add the OrdSize column to allow users to filter the visuals by that column easily.
-
-![Slicer](./images/power-bi/slicer.png)
+Change the value in the box below to the word you'd like to be in the column.
+![Age table](./images/power-bi/age-table.png)
 
 ## Wrapping Up
 
-There is much more to explore, but you should have a good start! When first learning, you can gain a lot by pulling in some data that interests you and trying to figure out what insights you can gain from it.
+There is much more to explore about Google Apps Script, but you should have a good understanding about hows it works.
 
-Here are some ideas to get started:
+Here are some ideas and References that i used:
 
-- What size of a company will most likely allow me to work remotely at my current experience level?
-- What level of education has the best annual compensation?
-- (challenging) How many devs work with AWS, GCP, or Azure? (Hint, you can split `PlatformHaveWorkedWith` column into individual options, but you don't have to).
-- (challenging) Split one or more of the multiresponse columns in Power Query
-- (extra hard) Split the multiresponse columns into separate tables
+- Laurence Svekis website: ![basescripts](https://basescripts.com/category/apps-script)
