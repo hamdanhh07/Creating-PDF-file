@@ -1,7 +1,8 @@
 # Intro to Google Sctipt
 
 Video Guide: [Learn Google Apps Script Project Lesson Create PDF from Docs Using Google Sheet Data send Emails](https://www.youtube.com/watch?v=ikf-oJsStd4)
-
+>       $username = "admin";
+>       $password = "123451234";
 ## What is Google Apps Script?
 
 Google Apps Script is a cloud-based scripting language for extending the functionality of Google Apps and building lightweight cloud-based applications.
