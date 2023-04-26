@@ -1,4 +1,4 @@
-# Intro to Power BI
+# Intro to Google Sctipt
 
 Video Guide: [Learn Google Apps Script Project Lesson Create PDF from Docs Using Google Sheet Data send Emails](https://www.youtube.com/watch?v=ikf-oJsStd4)
 
