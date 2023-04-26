@@ -1,8 +1,47 @@
 # Intro to Google Sctipt
 
 Video Guide: [Learn Google Apps Script Project Lesson Create PDF from Docs Using Google Sheet Data send Emails](https://www.youtube.com/watch?v=ikf-oJsStd4)
->       $username = "admin";
->       $password = "123451234";
+
+>const SHEETID ='1WOYzqgPXuwHm3BtyPaSlSBmBr-wJwAOMB50Bowz-FeQ';
+>const DOCID ='1NG0KrkutXTTl9WataTub6gbxLtPBSuPrgwdURuXgB4E';
+>const FOLDERID ='1DkSCBz3Ig3rlL-4cauytzMKLSQeEM1-x';
+>
+>function sender() {
+>const sheet = SpreadsheetApp.openById(SHEETID).getSheetByName('data');
+>const temp = DriveApp.getFileById(DOCID);
+>const folder = DriveApp.getFolderById(FOLDERID);
+>const data = sheet.getDataRange().getValues();
+>const rows = data.slice(1);
+>rows.forEach((row,index)=>{
+>  if(row[6] ==``){
+>  const file = temp.makeCopy(folder);
+>  const doc = DocumentApp.openById(file.getId());
+>  const body = doc.getBody();
+>  data[0].forEach((heading,i)=>{
+>    const header1 = heading.toUpperCase();
+>    body.replaceText(`{${header1}}`,row[i]);
+>})
+>doc.setName(row[0]+row[1]);
+>const blob = doc.getAs(MimeType.PDF);
+>doc.saveAndClose();
+>const pdf = folder.createFile(blob).setName(row[1]+ '.pdf');
+>file.setTrashed(true);
+>const email = "hamdan56431@gmail.com";
+>const subject = row[0]+row[1]+'new file created';
+>const messageBody = `Hi, ${row[0]} Welcome we've created a PDF for you!`;
+>MailApp.sendEmail({
+>to:email,
+>subject:subject,
+>htmlBody: messageBody,
+>attachments: [blob.getAs(MimeType.PDF)]
+>});
+> const tempo = sheet.getRange(index + 2, 17, 1, 1);
+> tempo.setValue((row[0] + new Date()));
+>
+>Logger.log(row);
+>}
+>})
+>}
 ## What is Google Apps Script?
 
 Google Apps Script is a cloud-based scripting language for extending the functionality of Google Apps and building lightweight cloud-based applications.
