@@ -244,5 +244,5 @@ There is much more to explore about Google Apps Script, but you should have a go
 
 Here are some ideas and References that i used:
 
-- Laurence Svekis website: ![basescripts](https://basescripts.com/category/apps-script)
+- Laurence Svekis website: [basescripts](https://basescripts.com/category/apps-script)
 
